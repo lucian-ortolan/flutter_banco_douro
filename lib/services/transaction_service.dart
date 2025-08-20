@@ -12,7 +12,7 @@ import 'api_key.dart';
 
 class TransactionService {
   final AccountService _accountService = AccountService();
-  String url = "https://api.github.com/gists/<id_do_gist_aqui>";
+  String url = "https://api.github.com/gists/5b746a8ce5d50caf7cf91488e640b7ca";
 
   Future<void> makeTransaction({
     required String idSender,
@@ -53,13 +53,13 @@ class TransactionService {
     senderAccount.balance -= (amount + taxes);
     receiverAccount.balance += amount;
 
-    listAccounts[listAccounts.indexWhere(
-      (acc) => acc.id == senderAccount.id,
-    )] = senderAccount;
+    listAccounts[listAccounts.indexWhere((acc) => acc.id == senderAccount.id)] =
+        senderAccount;
 
     listAccounts[listAccounts.indexWhere(
-      (acc) => acc.id == receiverAccount.id,
-    )] = receiverAccount;
+          (acc) => acc.id == receiverAccount.id,
+        )] =
+        receiverAccount;
 
     Transaction transaction = Transaction(
       id: (Random().nextInt(89999) + 10000).toString(),
@@ -78,8 +78,9 @@ class TransactionService {
     Response response = await get(Uri.parse(url));
 
     Map<String, dynamic> mapResponse = json.decode(response.body);
-    List<dynamic> listDynamic =
-        json.decode(mapResponse["files"]["transactions.json"]["content"]);
+    List<dynamic> listDynamic = json.decode(
+      mapResponse["files"]["transactions.json"]["content"],
+    );
 
     List<Transaction> listTransactions = [];
 
@@ -109,15 +110,13 @@ class TransactionService {
 
     await post(
       Uri.parse(url),
-      headers: {
-        "Authorization": "Bearer $githubApiKey",
-      },
+      headers: {"Authorization": "Bearer $githubApiKey"},
       body: json.encode({
         "description": "accounts.json",
         "public": true,
         "files": {
-          "transactions.json": {"content": content}
-        }
+          "transactions.json": {"content": content},
+        },
       }),
     );
   }
